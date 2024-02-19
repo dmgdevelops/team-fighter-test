@@ -1,5 +1,5 @@
 #include <SDL.h>
-#include <SDL_image.h>
+#include <SDL2/SDL_image.h>
 #include <stdlib.h>
 
 #include "gf2d_graphics.h"
