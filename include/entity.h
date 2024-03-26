@@ -1,12 +1,40 @@
 #ifndef __ENTITY_H__
 #define __ENTITY_H__
 
-#include <gfc_types.h>
-#include <gf2d_sprite.h>
+#include "gfc_types.h"
+#include "gf2d_sprite.h"
 
 /**
  *      This is the entity system for my 2d project
  */
+
+typedef enum
+{
+    ES_stand = 0,
+    ES_stBlock,
+    ES_crouch,
+    ES_chBlock,
+    ES_attack,
+    ES_knockd,
+    ES_dash,
+    ES_walk,
+    ES_jump,
+    ES_jumpBlock,
+    ES_hitstun,
+    ES_blockstun,
+    ES_recovery,
+    ES_ko
+}EntityState;
+
+typedef enum
+{
+    ENT_PROJ = 0,
+    ENT_ATTACK,
+    ENT_P1_ACTIVE,
+    ENT_P2_ACTIVE,
+    ENT_P1_TAG,
+    ENT_P2_TAG
+}EntityType;
 
 typedef struct Entity_S
 {
@@ -18,6 +46,21 @@ typedef struct Entity_S
     void   (*update)(struct Entity_S *self);
     void   (*free)(struct Entity_S *self);
     void *data;
+
+    float redHealth;            //Current Health
+    float greyHealth;           //Recoverable Health
+    Vector2D moveSpeed;         //Movement moveSpeed
+
+    int jumps;                  //How many jumps does the character have
+
+    Uint8 canAirdash;           //Flag to define if a character can canAirdash
+    Uint8 isFloat;              //Flag to define if a character can currently fly
+    Uint8 xFactor;              //Flag to define if x-factor is active
+
+
+    EntityState state;
+    EntityType type;
+
 }Entity;
 
 

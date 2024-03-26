@@ -13,7 +13,7 @@ static EntityManager _entity_manager = {0}; //initialize a LOCAL global entity m
 
 void entity_system_initialize(Uint32 max)
 {
-    if(!_entity_manager.entity_list)
+    if(_entity_manager.entity_list)
     {
         slog("can't have two instances of an entity manager, one is active");
         return;
@@ -24,7 +24,7 @@ void entity_system_initialize(Uint32 max)
         return;
     }
     _entity_manager.entity_list = gfc_allocate_array(sizeof(Entity),max);
-    if( !_entity_manager.entity_list)
+    if(!_entity_manager.entity_list)
     {
         slog("failed to allocate global entity list");
         return;
@@ -87,7 +87,7 @@ void entity_system_think()
     int i;
     for (i = 0;i < _entity_manager.entity_max;i++)
     {
-        if(_entity_manager.entity_list[i]._inuse)continue;
+        if(!_entity_manager.entity_list[i]._inuse)continue;
         entity_think(&_entity_manager.entity_list[i]);
     }
 }
@@ -104,7 +104,7 @@ void entity_system_update()
     int i;
     for (i = 0;i < _entity_manager.entity_max;i++)
     {
-        if(_entity_manager.entity_list[i]._inuse)continue;
+        if(!_entity_manager.entity_list[i]._inuse)continue;
         entity_update(&_entity_manager.entity_list[i]);
     }
 }
@@ -132,7 +132,7 @@ void entity_system_draw()
     int i;
     for (i = 0;i < _entity_manager.entity_max;i++)
     {
-        if(_entity_manager.entity_list[i]._inuse)continue;
+        if(!_entity_manager.entity_list[i]._inuse)continue;
         entity_draw(&_entity_manager.entity_list[i]);
     }
 }
