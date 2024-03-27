@@ -117,10 +117,10 @@ void entity_draw(Entity *self)
         gf2d_sprite_render(
             self->sprite,
             self->position,
+            &self->scale,
             NULL,
             NULL,
-            NULL,
-            NULL,
+            &self->flip,
             NULL,
             NULL,
             (Uint32)self->frame);

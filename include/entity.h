@@ -42,6 +42,9 @@ typedef struct Entity_S
     Sprite      *sprite;        //Entity sprite (if needed)
     float      frame;          //Current frame of animation for sprite
     Vector2D    position;       //Where to draw entity
+    Vector2D    flip;
+    Vector2D    scale;
+    float         factor;
     void   (*think)(struct Entity_S *self);
     void   (*update)(struct Entity_S *self);
     void   (*free)(struct Entity_S *self);
@@ -50,17 +53,19 @@ typedef struct Entity_S
     float redHealth;            //Current Health
     float greyHealth;           //Recoverable Health
     Vector2D moveSpeed;         //Movement moveSpeed
+    float activeFrames;         //Keeps track of how long a move is active for
 
     int jumps;                  //How many jumps does the character have
 
     Uint8 canAirdash;           //Flag to define if a character can canAirdash
     Uint8 isFloat;              //Flag to define if a character can currently fly
     Uint8 xFactor;              //Flag to define if x-factor is active
+    Uint8 isAttacking;          //Flag to define if a character is currently attacking
 
 
     EntityState state;
     EntityType type;
-
+    //Rect bounds;
 }Entity;
 
 

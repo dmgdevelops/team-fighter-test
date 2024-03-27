@@ -21,18 +21,23 @@ Entity *player1_new()
 
     //self->sprite = gf2d_sprite_load_image("images/doom-stance.png");
     self->sprite = gf2d_sprite_load_all(
-        "images/ed210.png",
-        128,
-        128,
-        16,
+        "images/Polnareff/polnareff_idle.png",
+        180,
+        155,
+        13,
         0);
     self->frame = 0;
-    self->position = vector2d(5,5);
+    self->position = vector2d(5,450);
+    self->flip = vector2d(1,0);
+    self->scale = vector2d(1.5,1.5);
 
     self->think = player1_think;
     self->update = player1_update;
     self->free = player1_free;
     self->redHealth = 100;
+    self->factor = 3;
+    self->isAttacking = 0;
+    self->activeFrames = 0;
 
     return self;
 }
@@ -45,35 +50,80 @@ void player1_think(Entity *self)
 
     SDL_Joystick *joystick;
     joystick = SDL_JoystickOpen(0);
-
-    if(SDL_JoystickGetAxis(joystick, 1) < -32700 || SDL_JoystickGetHat(joystick, 0) == 1)
+    //slog("Open Buttons: %i", SDL_JoystickNumButtons(joystick));
+    if((SDL_JoystickGetAxis(joystick, 1) < -32700 || SDL_JoystickGetButton(joystick, 11) == 1) && self->state != ES_attack)
     {
         dir.y = -1;
-        self->state = ES_crouch;
-    }
-    if(SDL_JoystickGetAxis(joystick, 1) > 32700 || SDL_JoystickGetHat(joystick, 0) == 4)
-    {
-        dir.y = 1;
         self->state = ES_jump;
+        self->factor = 3;
     }
-    if(SDL_JoystickGetAxis(joystick, 0) > 32700 || SDL_JoystickGetHat(joystick, 0) == 2)
+    else if((SDL_JoystickGetAxis(joystick, 1) > 32700 || SDL_JoystickGetButton(joystick, 12) == 1) && self->state != ES_attack)
     {
-        dir.x = 1;
+        //dir.y = 1;
+        self->state = ES_crouch;
+        self->sprite = gf2d_sprite_load_all("images/Polnareff/polnareff_crouch.png",180,155,9,0);
+        self->factor = 3;
+    }
+    else if((SDL_JoystickGetAxis(joystick, 0) > 32700 || SDL_JoystickGetButton(joystick, 14) == 1) && self->state != ES_attack)
+    {
+        dir.x = 1; //forward walk
         self->state = ES_walk;
+        self->sprite = gf2d_sprite_load_all("images/Polnareff/polnareff_walk.png",180,155,10,0);
+        self->factor = 3;
     }
-    if(SDL_JoystickGetAxis(joystick, 0) < -32700 || SDL_JoystickGetHat(joystick, 0) == 8)
+    else if((SDL_JoystickGetAxis(joystick, 0) < -32700 || SDL_JoystickGetButton(joystick, 13) == 1) && self->state != ES_attack)
     {
-        dir.x = -1;
-        self->state = ES_stBlock;
+        dir.x = -1; //backward walk
+        self->state = ES_walk;
+        self->sprite = gf2d_sprite_load_all("images/Polnareff/polnareff_walk.png",180,155,10,0);
+        self->factor = 1.5;
+    }
+    else if (self->state != ES_attack)
+    {
+        self->state = ES_stand;
+        self->sprite = gf2d_sprite_load_all("images/Polnareff/polnareff_idle.png",180,155,13,0);
+        self->factor = 3;
     }
 
+    if(SDL_JoystickGetButton(joystick, 0) == 1 && self->state != ES_crouch && self->isAttacking == 0)
+    {
+        self->state = ES_attack;
+        self->isAttacking = 1;
+        self->activeFrames = 11;
+        self->sprite = gf2d_sprite_load_all("images/Polnareff/polnareff_b.png",180,155,11,0);
+    }
+    else if (self->isAttacking == 0){
+       self->state = ES_stand;
+    }
     vector2d_normalize(&dir);
-    vector2d_scale(self->moveSpeed,dir,3);
+    //self->state = ES_stand;
+    vector2d_scale(self->moveSpeed,dir,self->factor);
 }
 
 void player1_update(Entity *self)
 {
     if(!self)return;
+    if(self->state == ES_stand){
+        self->frame += 0.02;
+        if(self->frame >= 13)self->frame = 0;
+    }
+    if(self->state == ES_crouch){
+        self->frame += 0.025;
+        if(self->frame >= 8)self->frame = 4;
+    }
+    if(self->state == ES_walk){
+        self->frame += 0.1;
+        if(self->frame >= 10)self->frame = 0;
+    }
+    if(self->state == ES_attack){
+        self->frame += 0.04;
+        if(self->frame >= self->activeFrames)
+        {
+            self->frame = 0;
+            self->isAttacking = 0;
+            self->activeFrames = 0;
+        }
+    }
 
     vector2d_add(self->position,self->position,self->moveSpeed);
 }
