@@ -43,7 +43,7 @@ void camera_center_on(Vector2D target)
     Vector2D position;
     position.x = target.x - (_camera.size.x * 0.5);
     position.y = target.y - (_camera.size.y * 0.5);
-    camera_set_position();
+    camera_set_position(position);
     if (_camera.bindCamera) camera_apply_bounds();
 }
 

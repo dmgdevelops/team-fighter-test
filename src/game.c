@@ -8,6 +8,7 @@
 
 #include "camera.h"
 #include "player1.h"
+#include "player2.h"
 
 int main(int argc, char * argv[])
 {
@@ -21,6 +22,7 @@ int main(int argc, char * argv[])
     //Sprite *mouse;
     //Color mouseColor = gfc_color8(255,100,255,200);
     Entity *player;
+    Entity *cpu;
     Vector2D stage_center = vector2d(-553, -420);
     
     /*program initializtion*/
@@ -37,6 +39,11 @@ int main(int argc, char * argv[])
     gf2d_graphics_set_frame_delay(16);
     gf2d_sprite_init(1024);
     entity_system_initialize(1024);
+    if(SDL_Init(SDL_INIT_JOYSTICK) < 0)
+    {
+        slog("Couldn't initialize SDL controller");
+    }
+    SDL_JoystickEventState(SDL_ENABLE);
     SDL_ShowCursor(SDL_DISABLE);
     //camera_set_size(vector2d(1200,720));
     
@@ -48,6 +55,7 @@ int main(int argc, char * argv[])
     //gf2d_sprite_draw_image(sprite, stage_center);
     //mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16,0);
     player = player1_new();
+    cpu = player2_new();
     /*main game loop*/
     while(!done)
     {
@@ -86,6 +94,7 @@ int main(int argc, char * argv[])
         //slog("Rendering at %f FPS",gf2d_graphics_get_frames_per_second());
     }
     entity_free(player);
+    SDL_Quit();
     slog("---==== END ====---");
     return 0;
 }

@@ -3,6 +3,7 @@
 
 #include "gfc_types.h"
 #include "gf2d_sprite.h"
+#include "input.h"
 
 /**
  *      This is the entity system for my 2d project
@@ -15,9 +16,11 @@ typedef enum
     ES_crouch,
     ES_chBlock,
     ES_attack,
+    ES_special,
     ES_knockd,
     ES_dash,
     ES_walk,
+    ES_backwalk,
     ES_jump,
     ES_jumpBlock,
     ES_hitstun,
@@ -53,6 +56,7 @@ typedef struct Entity_S
     float redHealth;            //Current Health
     float greyHealth;           //Recoverable Health
     Vector2D moveSpeed;         //Movement moveSpeed
+    Vector2D jumpSpeed;
     float activeFrames;         //Keeps track of how long a move is active for
 
     int jumps;                  //How many jumps does the character have
@@ -62,9 +66,15 @@ typedef struct Entity_S
     Uint8 xFactor;              //Flag to define if x-factor is active
     Uint8 isAttacking;          //Flag to define if a character is currently attacking
 
+    Uint8 isJumping;
+    float jumpStrength;
+    float jumpHeight;
+    float gravity;
+    //Vector2D direction;
 
     EntityState state;
     EntityType type;
+    InputAction input;
     //Rect bounds;
 }Entity;
 

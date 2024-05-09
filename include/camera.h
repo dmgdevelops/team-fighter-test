@@ -20,6 +20,6 @@ void camera_set_bounds(Rect bounds);
 
 void camera_enable_binding(Bool bindCamera);
 
-void camera_center_on(Vector2D target)
+void camera_center_on(Vector2D target);
 
 #endif
